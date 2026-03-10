@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจองคิว Travel - WDC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; padding: 20px;
+        }
+
+        /* ── Access Denied Screen ── */
+        .access-denied {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 80vh;
+        }
+        .denied-card {
+            background: white; border-radius: 16px; padding: 50px 40px;
+            text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.2); max-width: 420px;
+        }
+        .denied-icon { font-size: 64px; margin-bottom: 20px; }
+        .denied-title { font-size: 22px; font-weight: 800; color: #dc2626; margin-bottom: 10px; }
+        .denied-msg { color: #666; font-size: 14px; line-height: 1.7; }
+
+        /* ── Admin Panel ── */
+        .admin-panel {
+            background: white; border-radius: 12px; padding: 20px 25px;
+            margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 5px solid #f59e0b;
+        }
+        .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .admin-title { font-weight: 800; color: #92400e; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        .admin-toggle {
+            background: #fef3c7; border: 2px solid #f59e0b; color: #92400e;
+            padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700;
+        }
+        .admin-toggle:hover { background: #f59e0b; color: white; }
+        .admin-body { display: none; }
+        .admin-body.open { display: block; }
+
+        .link-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+        .link-row {
+            display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+            background: #fafafa; border: 1px solid #e5e7eb; border-radius: 8px;
+        }
+        .link-name { font-weight: 700; font-size: 13px; min-width: 110px; color: #333; }
+        .link-url {
+            flex: 1; font-size: 11px; color: #6b7280; background: #f3f4f6;
+            padding: 6px 10px; border-radius: 6px; border: none; outline: none;
+            cursor: pointer; font-family: monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .copy-btn {
+            background: #667eea; color: white; border: none; padding: 6px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700; white-space: nowrap;
+        }
+        .copy-btn:hover { background: #5568d3; }
+        .copy-btn.copied { background: #22c55e; }
+
+        /* ── Main App ── */
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header {
+            background: white; padding: 20px 25px; border-radius: 12px;
+            margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .header-icon { font-size: 40px; }
+        h1 { color: #333; font-size: 22px; }
+        .subtitle { color: #888; font-size: 13px; margin-top: 3px; }
+        .user-badge {
+            background: #667eea; color: white; padding: 8px 16px;
+            border-radius: 20px; font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .admin-badge { background: #f59e0b; }
+
+        /* Tab */
+        .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; }
+        .tab-btn {
+            padding: 10px 24px; border: none; border-radius: 8px; font-size: 14px;
+            font-weight: 700; cursor: pointer; transition: all 0.2s;
+            background: rgba(255,255,255,0.3); color: white;
+        }
+        .tab-btn.active { background: white; color: #667eea; }
+        .tab-btn:hover:not(.active) { background: rgba(255,255,255,0.45); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Main Grid */
+        .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #667eea; margin-bottom: 20px; font-size: 18px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
+
+        /* Person Grid */
+        .person-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 20px; }
+        .person-item {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 12px 8px; border: 2px solid #e0e0e0; border-radius: 10px;
+            cursor: pointer; transition: all 0.2s; text-align: center; gap: 4px; user-select: none;
+        }
+        .person-item:hover:not(.booked):not(.locked) { border-color: #667eea; background: #f5f7ff; }
+        .person-item.selected { border-color: #667eea; background: #667eea; color: white; }
+        .person-item.booked { background: #f0f0f0; cursor: not-allowed; opacity: 0.55; }
+        .person-item.locked { background: #fef9ee; cursor: not-allowed; opacity: 0.6; border-color: #fcd34d; }
+        .person-avatar { font-size: 22px; }
+        .person-name { font-size: 12px; font-weight: 700; }
+        .person-status { font-size: 10px; color: #888; }
+        .person-item.selected .person-status { color: rgba(255,255,255,0.85); }
+        .person-item.booked .person-status { color: #e74c3c; }
+        .person-item.locked .person-status { color: #d97706; }
+
+        .form-group { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 6px; color: #444; font-weight: 600; font-size: 14px; }
+
+        /* Calendar */
+        .date-range-container { border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; }
+        .date-range-header {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #667eea; color: white; padding: 12px 15px;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.25); border: none; color: white;
+            width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+            font-size: 20px; display: flex; align-items: center; justify-content: center;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.45); }
+        .month-title { font-weight: 700; font-size: 15px; }
+        .calendar-grid { padding: 8px 10px 10px; }
+        .day-labels {
+            display: grid; grid-template-columns: repeat(7,1fr); text-align: center;
+            font-size: 11px; font-weight: 700; color: #888; margin-bottom: 6px;
+        }
+        .day-labels span:first-child { color: #e74c3c; }
+        .day-labels span:last-child  { color: #3498db; }
+        .days-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+        .day-cell {
+            aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; border-radius: 6px; cursor: pointer; transition: background 0.15s;
+        }
+        .day-cell.empty   { cursor: default; pointer-events: none; }
+        .day-cell.disabled { color: #ccc !important; cursor: not-allowed !important; pointer-events: none; }
+        .day-cell.today   { font-weight: 800; color: #667eea; }
+        .day-cell.available:hover { background: #eef0ff; }
+        .day-cell.start-date { background: #667eea !important; color: white !important; border-radius: 8px 0 0 8px; }
+        .day-cell.end-date   { background: #667eea !important; color: white !important; border-radius: 0 8px 8px 0; }
+        .day-cell.start-date.end-date { border-radius: 8px !important; }
+        .day-cell.in-range   { background: #dde3ff !important; border-radius: 0; color: #333; }
+        .day-cell.hover-range { background: #eef0ff !important; border-radius: 0; }
+        .range-display {
+            padding: 10px 14px; background: #f8f9ff; border-top: 1px solid #e8ecff;
+            font-size: 13px; color: #555; display: flex; justify-content: space-between; align-items: center;
+        }
+        .range-text { font-weight: 600; color: #667eea; }
+        .clear-btn { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 12px; padding: 3px 8px; border-radius: 4px; }
+        .clear-btn:hover { background: #ffe8e8; }
+
+        /* Hotel */
+        .hotel-options { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+        .hotel-option {
+            border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px 8px;
+            text-align: center; cursor: pointer; transition: all 0.2s; user-select: none;
+        }
+        .hotel-option:hover { border-color: #667eea; background: #f5f7ff; }
+        .hotel-option.selected { border-color: #667eea; background: #667eea; color: white; }
+        .hotel-icon { font-size: 24px; margin-bottom: 5px; }
+        .hotel-name { font-size: 11px; font-weight: 700; }
+
+        .btn {
+            width: 100%; padding: 13px; background: #667eea; color: white;
+            border: none; border-radius: 8px; font-size: 15px; font-weight: 700;
+            cursor: pointer; transition: all 0.3s; margin-top: 5px;
+        }
+        .btn:hover:not(:disabled) { background: #5568d3; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102,126,234,0.4); }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        .status-bar {
+            background: #e8f5e9; border: 1px solid #81c784; padding: 10px 14px;
+            border-radius: 8px; margin-bottom: 15px; color: #2e7d32; font-size: 13px; font-weight: 600;
+        }
+        .warning {
+            background: #fff3cd; border: 1px solid #ffc107; padding: 10px 14px;
+            border-radius: 8px; margin-bottom: 12px; color: #856404; font-size: 13px;
+        }
+        .info-box {
+            background: #eff6ff; border: 1px solid #93c5fd; padding: 10px 14px;
+            border-radius: 8px; margin-bottom: 15px; color: #1e40af; font-size: 13px;
+        }
+
+        /* Queue */
+        .queue-list { max-height: 580px; overflow-y: auto; }
+        .queue-list::-webkit-scrollbar { width: 4px; }
+        .queue-list::-webkit-scrollbar-thumb { background: #667eea; border-radius: 4px; }
+        .queue-item {
+            background: #f8f9fa; padding: 14px; border-radius: 10px;
+            margin-bottom: 10px; border-left: 4px solid #667eea;
+        }
+        .queue-item.my-booking { border-left-color: #22c55e; background: #f0fdf4; }
+        .queue-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .queue-info { font-size: 13px; color: #555; line-height: 1.9; }
+        .queue-info strong { color: #333; font-size: 14px; }
+        .queue-people { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+        .person-tag { background: #667eea; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .person-tag.me { background: #22c55e; }
+        .delete-btn {
+            background: #fee2e2; color: #dc2626; border: none; padding: 5px 10px;
+            border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; white-space: nowrap;
+        }
+        .delete-btn:hover { background: #dc2626; color: white; }
+        .empty-state { text-align: center; color: #bbb; padding: 40px 20px; }
+        .empty-icon { font-size: 48px; margin-bottom: 10px; }
+
+        /* Log */
+        .log-page { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .log-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+        .log-toolbar input, .log-toolbar select {
+            padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 13px; outline: none;
+        }
+        .log-toolbar input:focus, .log-toolbar select:focus { border-color: #667eea; }
+        .log-toolbar input[type="text"] { flex: 1; min-width: 180px; }
+        .export-btn {
+            padding: 8px 16px; border: none; border-radius: 8px; font-size: 13px;
+            font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        }
+        .export-csv  { background: #22c55e; color: white; }
+        .export-csv:hover { background: #16a34a; }
+        .export-json { background: #3b82f6; color: white; }
+        .export-json:hover { background: #2563eb; }
+        .clear-log-btn { background: #fee2e2; color: #dc2626; }
+        .clear-log-btn:hover { background: #dc2626; color: white; }
+        .log-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+        .stat-card { background: #f8f9ff; border: 2px solid #e8ecff; border-radius: 10px; padding: 14px; text-align: center; }
+        .stat-num { font-size: 28px; font-weight: 800; color: #667eea; }
+        .stat-label { font-size: 11px; color: #888; margin-top: 4px; }
+        .log-table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid #e8ecff; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead tr { background: #667eea; color: white; }
+        thead th { padding: 11px 14px; text-align: left; font-weight: 700; white-space: nowrap; }
+        tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.15s; }
+        tbody tr:hover { background: #f8f9ff; }
+        tbody td { padding: 10px 14px; vertical-align: middle; }
+        tbody tr:last-child { border-bottom: none; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+        .badge-book   { background: #dcfce7; color: #166534; }
+        .badge-cancel { background: #fee2e2; color: #991b1b; }
+        .log-empty { text-align: center; color: #bbb; padding: 40px; font-size: 15px; }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 16px; }
+        .page-btn {
+            width: 32px; height: 32px; border: 2px solid #e0e0e0; border-radius: 6px;
+            background: white; cursor: pointer; font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+        }
+        .page-btn:hover:not(.active):not(:disabled) { border-color: #667eea; color: #667eea; }
+        .page-btn.active { background: #667eea; border-color: #667eea; color: white; }
+        .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .page-info { font-size: 13px; color: #888; }
+
+        @media (max-width: 768px) {
+            .main-content { grid-template-columns: 1fr; }
+            .log-stats { grid-template-columns: repeat(2,1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══ ACCESS DENIED (shown if no valid token) ══ -->
+<div class="access-denied" id="accessDenied" style="display:none;">
+    <div class="denied-card">
+        <div class="denied-icon">🔒</div>
+        <div class="denied-title">ไม่มีสิทธิ์เข้าใช้งาน</div>
+        <div class="denied-msg">
+            กรุณาใช้ลิงก์ที่ได้รับจากผู้ดูแลระบบ<br>
+            หากไม่มีลิงก์ กรุณาติดต่อทีม WDC Travel
+        </div>
+    </div>
+</div>
+
+<!-- ══ MAIN APP (hidden until token validated) ══ -->
+<div class="container" id="mainApp" style="display:none;">
+
+    <!-- Admin Panel (only for admin token) -->
+    <div class="admin-panel" id="adminPanel" style="display:none;">
+        <div class="admin-header">
+            <div class="admin-title">⚙️ Admin — จัดการลิงก์สำหรับแชร์</div>
+            <button class="admin-toggle" onclick="toggleAdminBody()">แสดง / ซ่อน ลิงก์</button>
+        </div>
+        <div class="admin-body" id="adminBody">
+            <div class="link-grid" id="linkGrid"></div>
+        </div>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <div class="header-icon">✈️</div>
+            <div>
+                <h1>ระบบจองคิว Travel</h1>
+                <div class="subtitle">Western Digital — Employee Transportation Booking</div>
+            </div>
+        </div>
+        <div class="user-badge" id="userBadge">👤 —</div>
+    </div>
+
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('booking')">📝 จองคิว</button>
+        <button class="tab-btn" onclick="switchTab('log')" id="logTabBtn">📋 Log ย้อนหลัง</button>
+    </div>
+
+    <!-- BOOKING TAB -->
+    <div class="tab-content active" id="tab-booking">
+        <div class="main-content">
+            <div class="card">
+                <h2>📝 จองคิวใหม่</h2>
+                <div class="status-bar">👥 ผู้เดินทางที่ยังว่าง: <span id="availableCount">6</span> / 6 คน</div>
+                <div class="info-box" id="userInfo"></div>
+
+                <div class="form-group">
+                    <label>เลือกผู้เดินทาง (เลือกได้ 1–3 คน)</label>
+                    <div class="person-grid" id="personGrid"></div>
+                </div>
+
+                <div id="warningMsg" class="warning" style="display:none;">⚠️ เลือกได้สูงสุด 3 คนต่อรอบ</div>
+
+                <div class="form-group">
+                    <label>📅 ช่วงวันที่เดินทาง</label>
+                    <div class="date-range-container">
+                        <div class="date-range-header">
+                            <button class="nav-btn" id="prevBtn">&#8249;</button>
+                            <div class="month-title" id="monthTitle"></div>
+                            <button class="nav-btn" id="nextBtn">&#8250;</button>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="day-labels">
+                                <span>อา</span><span>จ</span><span>อ</span>
+                                <span>พ</span><span>พฤ</span><span>ศ</span><span>ส</span>
+                            </div>
+                            <div class="days-grid" id="daysGrid"></div>
+                        </div>
+                        <div class="range-display">
+                            <span class="range-text" id="rangeText">— เลือกวันเริ่มต้น —</span>
+                            <button class="clear-btn" id="clearBtn">✕ ล้าง</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>🏨 เลือกโรงแรมปลายทาง</label>
+                    <div class="hotel-options" id="hotelOptions">
+                        <div class="hotel-option" data-hotel="Kantary"><div class="hotel-icon">🏰</div><div class="hotel-name">Kantary</div></div>
+                        <div class="hotel-option" data-hotel="Burgundy"><div class="hotel-icon">🍷</div><div class="hotel-name">Burgundy</div></div>
+                        <div class="hotel-option" data-hotel="The Garden"><div class="hotel-icon">🌿</div><div class="hotel-name">The Garden</div></div>
+                    </div>
+                </div>
+
+                <button class="btn" id="bookBtn" disabled>จองคิว</button>
+            </div>
+
+            <div class="card">
+                <h2>📋 รายการคิวที่จองแล้ว</h2>
+                <div class="queue-list" id="queueList">
+                    <div class="empty-state"><div class="empty-icon">🗂️</div><div>ยังไม่มีการจองคิว</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOG TAB -->
+    <div class="tab-content" id="tab-log">
+        <div class="log-page">
+            <h2>📋 Log ประวัติการจอง / ยกเลิก</h2>
+            <div class="log-stats">
+                <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">รายการทั้งหมด</div></div>
+                <div class="stat-card"><div class="stat-num" id="statBook" style="color:#22c55e">0</div><div class="stat-label">การจอง</div></div>
+                <div class="stat-card"><div class="stat-num" id="statCancel" style="color:#ef4444">0</div><div class="stat-label">การยกเลิก</div></div>
+                <div class="stat-card"><div class="stat-num" id="statPeople" style="color:#f59e0b">0</div><div class="stat-label">คนที่ผ่านการจอง</div></div>
+            </div>
+            <div class="log-toolbar">
+                <input type="text" id="logSearch" placeholder="🔍 ค้นหา ชื่อ / โรงแรม / วันที่...">
+                <select id="logFilterAction">
+                    <option value="">ทุก Action</option>
+                    <option value="BOOK">จองคิว</option>
+                    <option value="CANCEL">ยกเลิก</option>
+                </select>
+                <select id="logFilterHotel">
+                    <option value="">ทุกโรงแรม</option>
+                    <option value="Kantary">Kantary</option>
+                    <option value="Burgundy">Burgundy</option>
+                    <option value="The Garden">The Garden</option>
+                </select>
+                <input type="date" id="logFilterDateFrom">
+                <input type="date" id="logFilterDateTo">
+                <button class="export-btn export-csv"  onclick="exportCSV()">⬇ CSV</button>
+                <button class="export-btn export-json" onclick="exportJSON()">⬇ JSON</button>
+                <button class="export-btn clear-log-btn" id="clearLogBtn" style="display:none;" onclick="clearLog()">🗑 ล้าง Log</button>
+            </div>
+            <div class="log-table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th><th>วันที่-เวลา</th><th>Action</th>
+                            <th>โดย</th><th>ผู้เดินทาง</th>
+                            <th>โรงแรม</th><th>ช่วงวันที่</th><th>คืน</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logBody"></tbody>
+                </table>
+                <div class="log-empty" id="logEmpty" style="display:none;">ไม่มีข้อมูล</div>
+            </div>
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  TOKEN CONFIG — แก้ไข token และชื่อได้ที่นี่
+// ══════════════════════════════════════════════════
+const USERS = {
+    // token : { name, isAdmin }
+    'token-admin-wdc2025'  : { name: 'Admin',      isAdmin: true  },
+    'token-surakit-k001'   : { name: 'Surakit_K',  isAdmin: false },
+    'token-rossukon-s002'  : { name: 'Rossukon_S', isAdmin: false },
+    'token-khwanpho-c003'  : { name: 'Khwanpho_C', isAdmin: false },
+    'token-anan-w004'      : { name: 'Anan_W',     isAdmin: false },
+    'token-watthana-s005'  : { name: 'Watthana_S', isAdmin: false },
+    'token-sayan-n006'     : { name: 'Sayan_N',    isAdmin: false },
+};
+
+// ══════════════════════════════════════════════════
+//  APP CONFIG
+// ══════════════════════════════════════════════════
+const TOTAL   = 6;
+const MAX_PER = 3;
+const NAMES   = ['Surakit_K','Rossukon_S','Khwanpho_C','Anan_W','Watthana_S','Sayan_N'];
+const TH_MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+                   'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const HOTEL_ICONS = { 'Kantary':'🏰', 'Burgundy':'🍷', 'The Garden':'🌿' };
+const PAGE_SIZE = 15;
+
+// ══════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════
+let currentUser  = null;   // { name, isAdmin, token }
+let bookings     = [];
+let bookedPeople = new Set();
+let logs         = [];
+let selectedHotel = '';
+let startD = null, endD = null, hoverD = null;
+let calY, calM, currentPage = 1;
+
+// ══════════════════════════════════════════════════
+//  BOOT — check token from URL
+// ══════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const token  = params.get('token');
+    const user   = token ? USERS[token] : null;
+
+    if (!user) {
+        document.getElementById('accessDenied').style.display = 'flex';
+        return;
+    }
+
+    currentUser = { ...user, token };
+    document.getElementById('mainApp').style.display = 'block';
+
+    // Badge
+    const badge = document.getElementById('userBadge');
+    badge.textContent = (user.isAdmin ? '⚙️ ' : '👤 ') + user.name;
+    if (user.isAdmin) badge.classList.add('admin-badge');
+
+    // Admin extras
+    if (user.isAdmin) {
+        document.getElementById('adminPanel').style.display = 'block';
+        document.getElementById('clearLogBtn').style.display = 'inline-block';
+        buildLinkGrid();
+    }
+
+    // User info box
+    document.getElementById('userInfo').innerHTML =
+        `🔑 เข้าสู่ระบบในฐานะ <strong>${user.name}</strong> — ${user.isAdmin ? 'สามารถจองและจัดการได้ทั้งหมด' : 'สามารถจองในชื่อตัวเองและเลือกเพื่อนร่วมเดินทางได้'}`;
+
+    // Init calendar
+    const now = new Date();
+    calY = now.getFullYear(); calM = now.getMonth();
+
+    loadStorage();
+    buildPersonGrid();
+    renderCalendar();
+
+    document.getElementById('prevBtn').addEventListener('click', () => shiftMonth(-1));
+    document.getElementById('nextBtn').addEventListener('click', () => shiftMonth(1));
+    document.getElementById('clearBtn').addEventListener('click', clearDates);
+    document.getElementById('bookBtn').addEventListener('click', doBook);
+    document.getElementById('daysGrid').addEventListener('click', onCalendarClick);
+    document.getElementById('daysGrid').addEventListener('mouseover', onCalendarHover);
+    document.getElementById('daysGrid').addEventListener('mouseleave', () => { hoverD = null; paintCells(); });
+    document.getElementById('hotelOptions').addEventListener('click', e => {
+        const opt = e.target.closest('.hotel-option');
+        if (!opt) return;
+        document.querySelectorAll('.hotel-option').forEach(h => h.classList.remove('selected'));
+        opt.classList.add('selected');
+        selectedHotel = opt.dataset.hotel;
+        refreshBookBtn();
+    });
+    ['logSearch','logFilterAction','logFilterHotel','logFilterDateFrom','logFilterDateTo']
+        .forEach(id => document.getElementById(id).addEventListener('input', () => { currentPage = 1; renderLog(); }));
+});
+
+// ══════════════════════════════════════════════════
+//  ADMIN — build share link grid
+// ══════════════════════════════════════════════════
+function buildLinkGrid() {
+    const base = window.location.href.split('?')[0];
+    const grid = document.getElementById('linkGrid');
+    grid.innerHTML = Object.entries(USERS).map(([token, u]) => `
+        <div class="link-row">
+            <div class="link-name">${u.isAdmin ? '⚙️' : '👤'} ${u.name}</div>
+            <input class="link-url" id="link_${token}" readonly
+                value="${base}?token=${token}"
+                onclick="this.select()">
+            <button class="copy-btn" id="copybtn_${token}"
+                onclick="copyLink('${token}')">📋 คัดลอก</button>
+        </div>`).join('');
+}
+
+function copyLink(token) {
+    const input = document.getElementById('link_' + token);
+    input.select(); document.execCommand('copy');
+    const btn = document.getElementById('copybtn_' + token);
+    btn.textContent = '✅ คัดลอกแล้ว'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 คัดลอก'; btn.classList.remove('copied'); }, 2000);
+}
+
+function toggleAdminBody() {
+    document.getElementById('adminBody').classList.toggle('open');
+}
+
+// ══════════════════════════════════════════════════
+//  PERSON GRID
+// ══════════════════════════════════════════════════
+function buildPersonGrid() {
+    const grid = document.getElementById('personGrid');
+    grid.innerHTML = '';
+    const myName = currentUser.name;
+
+    for (let i = 1; i <= TOTAL; i++) {
+        const id = String(i);
+        const isBooked = bookedPeople.has(id);
+        // Non-admin: can only select themselves (index matches name)
+        const isMe = NAMES[i-1] === myName;
+        const isLocked = !currentUser.isAdmin && !isMe;
+
+        const el = document.createElement('div');
+        el.className = 'person-item' + (isBooked ? ' booked' : isLocked ? ' locked' : '');
+        el.dataset.person = id;
+        el.innerHTML = `
+            <div class="person-avatar">${isMe ? '🙋' : '👤'}</div>
+            <div class="person-name">${NAMES[i-1]}${isMe ? ' (คุณ)' : ''}</div>
+            <div class="person-status">${isBooked ? '✖ จองแล้ว' : isLocked ? '🔒 ไม่ใช่คุณ' : 'ว่าง'}</div>`;
+        grid.appendChild(el);
+    }
+    grid.addEventListener('click', onPersonClick);
+}
+
+function onPersonClick(e) {
+    const item = e.target.closest('.person-item:not(.booked):not(.locked)');
+    if (!item) return;
+    const isSelected = item.classList.contains('selected');
+    const count = document.querySelectorAll('.person-item.selected').length;
+    if (!isSelected && count >= MAX_PER) {
+        const w = document.getElementById('warningMsg');
+        w.style.display = 'block'; clearTimeout(w._t);
+        w._t = setTimeout(() => { w.style.display = 'none'; }, 2500);
+        return;
+    }
+    item.classList.toggle('selected');
+    item.querySelector('.person-status').textContent =
+        item.classList.contains('selected') ? '✔ เลือกแล้ว' : 'ว่าง';
+    refreshBookBtn();
+}
+
+// ══════════════════════════════════════════════════
+//  CALENDAR
+// ══════════════════════════════════════════════════
+function shiftMonth(d) {
+    calM += d;
+    if (calM > 11) { calM = 0; calY++; }
+    if (calM < 0)  { calM = 11; calY--; }
+    renderCalendar();
+}
+
+function renderCalendar() {
+    document.getElementById('monthTitle').textContent = `${TH_MONTHS[calM]} ${calY + 543}`;
+    const grid = document.getElementById('daysGrid');
+    grid.innerHTML = '';
+    const todayY = new Date().getFullYear(), todayM = new Date().getMonth(), todayD = new Date().getDate();
+    const firstWeekday = new Date(calY, calM, 1).getDay();
+    const totalDays    = new Date(calY, calM + 1, 0).getDate();
+
+    for (let i = 0; i < firstWeekday; i++) {
+        const el = document.createElement('div'); el.className = 'day-cell empty'; grid.appendChild(el);
+    }
+    for (let d = 1; d <= totalDays; d++) {
+        const el = document.createElement('div');
+        el.className = 'day-cell'; el.textContent = d;
+        el.dataset.y = calY; el.dataset.m = calM; el.dataset.d = d;
+        const isPast = (calY < todayY) || (calY === todayY && calM < todayM) ||
+                       (calY === todayY && calM === todayM && d < todayD);
+        if (isPast) el.classList.add('disabled');
+        else { el.classList.add('available'); if (calY === todayY && calM === todayM && d === todayD) el.classList.add('today'); }
+        grid.appendChild(el);
+    }
+    paintCells();
+}
+
+function paintCells() {
+    document.querySelectorAll('#daysGrid .day-cell.available').forEach(el => {
+        el.classList.remove('start-date','end-date','in-range','hover-range');
+        if (!startD) return;
+        const cy = +el.dataset.y, cm = +el.dataset.m, cd = +el.dataset.d;
+        const rawEnd = endD || hoverD;
+        let from = startD, to = rawEnd;
+        if (to && cmpDate(to, from) < 0) { from = rawEnd; to = startD; }
+        const isFrom  = sameD(cy,cm,cd,from);
+        const isTo    = to && sameD(cy,cm,cd,to);
+        const between = to && cmpDate({y:cy,m:cm,d:cd},from) > 0 && cmpDate({y:cy,m:cm,d:cd},to) < 0;
+        if (isFrom && isTo) el.classList.add('start-date','end-date');
+        else if (isFrom)    el.classList.add('start-date');
+        else if (isTo)      el.classList.add('end-date');
+        else if (between)   el.classList.add(endD ? 'in-range' : 'hover-range');
+    });
+}
+
+function onCalendarClick(e) {
+    const cell = e.target.closest('.day-cell.available');
+    if (!cell) return;
+    const clicked = { y:+cell.dataset.y, m:+cell.dataset.m, d:+cell.dataset.d };
+    if (!startD || (startD && endD)) { startD = clicked; endD = null; }
+    else {
+        const cmp = cmpDate(clicked, startD);
+        if (cmp === 0) endD = clicked;
+        else if (cmp < 0) { endD = startD; startD = clicked; }
+        else endD = clicked;
+    }
+    updateRangeText(); paintCells(); refreshBookBtn();
+}
+
+function onCalendarHover(e) {
+    const cell = e.target.closest('.day-cell.available');
+    if (!cell || !startD || endD) { hoverD = null; return; }
+    hoverD = { y:+cell.dataset.y, m:+cell.dataset.m, d:+cell.dataset.d };
+    paintCells();
+}
+
+function clearDates() { startD = endD = hoverD = null; updateRangeText(); paintCells(); refreshBookBtn(); }
+
+function updateRangeText() {
+    const el = document.getElementById('rangeText');
+    if (!startD) el.textContent = '— เลือกวันเริ่มต้น —';
+    else if (!endD) el.textContent = `เริ่ม: ${fmtTH(startD)}  →  เลือกวันสิ้นสุด`;
+    else {
+        const n = nightsBetween(startD, endD);
+        el.textContent = `${fmtTH(startD)}  →  ${fmtTH(endD)}` + (n > 0 ? `  (${n} คืน)` : '  (วันเดียว)');
+    }
+}
+
+// ══════════════════════════════════════════════════
+//  BOOK
+// ══════════════════════════════════════════════════
+function refreshBookBtn() {
+    const n = document.querySelectorAll('.person-item.selected').length;
+    document.getElementById('bookBtn').disabled = !(n > 0 && startD && selectedHotel);
+}
+
+function doBook() {
+    const people = Array.from(document.querySelectorAll('.person-item.selected')).map(el => el.dataset.person);
+    if (!people.length || !startD || !selectedHotel) return;
+
+    const b = {
+        id: Date.now(), people,
+        startISO: fmtISO(startD), endISO: endD ? fmtISO(endD) : fmtISO(startD),
+        hotel: selectedHotel, createdAt: new Date().toISOString(),
+        bookedBy: currentUser.name
+    };
+    bookings.push(b);
+    people.forEach(p => bookedPeople.add(p));
+    addLog('BOOK', b);
+    saveStorage(); buildPersonGrid(); renderQueue(); resetForm(); updateAvailable();
+
+    const n = endD ? nightsBetween(startD, endD) : 0;
+    alert(`✅ จองสำเร็จ!\n🏨 ${b.hotel}\n📅 ${b.startISO}${b.endISO !== b.startISO ? ' → '+b.endISO+(n>0?` (${n} คืน)`:'') : ''}\n👥 ${people.map(p=>NAMES[p-1]).join(', ')}`);
+}
+
+function deleteBooking(id) {
+    const b = bookings.find(x => x.id === id);
+    if (!b) return;
+    // Only admin or the person who booked can cancel
+    if (!currentUser.isAdmin && b.bookedBy !== currentUser.name) {
+        alert('❌ คุณไม่มีสิทธิ์ยกเลิกการจองของคนอื่น'); return;
+    }
+    if (!confirm('ยืนยันยกเลิกการจองนี้?')) return;
+    b.people.forEach(p => bookedPeople.delete(String(p)));
+    addLog('CANCEL', b);
+    bookings = bookings.filter(x => x.id !== id);
+    saveStorage(); buildPersonGrid(); renderQueue(); updateAvailable(); refreshBookBtn();
+}
+
+// ══════════════════════════════════════════════════
+//  LOG
+// ══════════════════════════════════════════════════
+function addLog(action, booking) {
+    logs.unshift({
+        logId: Date.now() + Math.random(),
+        timestamp: new Date().toISOString(),
+        action, bookedBy: booking.bookedBy || currentUser.name,
+        bookingId: booking.id,
+        people: booking.people.map(p => NAMES[p-1]),
+        hotel: booking.hotel,
+        startISO: booking.startISO, endISO: booking.endISO,
+        nights: nightsBetween(isoToObj(booking.startISO), isoToObj(booking.endISO))
+    });
+    saveStorage();
+}
+
+function renderLog() {
+    const search   = document.getElementById('logSearch').value.toLowerCase();
+    const actF     = document.getElementById('logFilterAction').value;
+    const hotelF   = document.getElementById('logFilterHotel').value;
+    const dateFrom = document.getElementById('logFilterDateFrom').value;
+    const dateTo   = document.getElementById('logFilterDateTo').value;
+
+    let filtered = logs.filter(l => {
+        if (actF    && l.action !== actF)   return false;
+        if (hotelF  && l.hotel  !== hotelF) return false;
+        if (dateFrom && l.startISO < dateFrom) return false;
+        if (dateTo   && l.startISO > dateTo)   return false;
+        if (search) {
+            const hay = [l.action, l.hotel, l.startISO, l.endISO, l.bookedBy, ...l.people].join(' ').toLowerCase();
+            if (!hay.includes(search)) return false;
+        }
+        return true;
+    });
+
+    document.getElementById('statTotal').textContent  = logs.length;
+    document.getElementById('statBook').textContent   = logs.filter(l => l.action==='BOOK').length;
+    document.getElementById('statCancel').textContent = logs.filter(l => l.action==='CANCEL').length;
+    document.getElementById('statPeople').textContent = new Set(logs.flatMap(l => l.people)).size;
+
+    const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if (currentPage > pages) currentPage = pages;
+    const slice = filtered.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
+
+    const tbody = document.getElementById('logBody');
+    document.getElementById('logEmpty').style.display = slice.length ? 'none' : 'block';
+
+    tbody.innerHTML = slice.map((l, i) => `
+        <tr>
+            <td style="color:#999;font-size:11px">${(currentPage-1)*PAGE_SIZE+i+1}</td>
+            <td style="white-space:nowrap">${fmtTimestamp(l.timestamp)}</td>
+            <td><span class="badge ${l.action==='BOOK'?'badge-book':'badge-cancel'}">${l.action==='BOOK'?'✅ จอง':'❌ ยกเลิก'}</span></td>
+            <td><strong>${l.bookedBy}</strong></td>
+            <td>${l.people.map(n=>`<span class="person-tag" style="font-size:11px">${n}</span>`).join(' ')}</td>
+            <td>${HOTEL_ICONS[l.hotel]||'🏨'} ${l.hotel}</td>
+            <td style="white-space:nowrap">${l.startISO}${l.endISO!==l.startISO?' → '+l.endISO:''}</td>
+            <td style="text-align:center">${l.nights>0?l.nights+' คืน':'—'}</td>
+        </tr>`).join('');
+
+    renderPagination(pages);
+}
+
+function renderPagination(pages) {
+    const c = document.getElementById('pagination');
+    if (pages <= 1) { c.innerHTML = ''; return; }
+    let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+    for (let p = 1; p <= pages; p++) {
+        if (p===1||p===pages||Math.abs(p-currentPage)<=1)
+            html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+        else if (Math.abs(p-currentPage)===2) html += `<span class="page-info">…</span>`;
+    }
+    html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>›</button>
+             <span class="page-info">(${logs.length} รายการ)</span>`;
+    c.innerHTML = html;
+}
+function goPage(p) { currentPage = p; renderLog(); }
+
+function renderQueue() {
+    const list = document.getElementById('queueList');
+    if (!bookings.length) {
+        list.innerHTML = `<div class="empty-state"><div class="empty-icon">🗂️</div><div>ยังไม่มีการจองคิว</div></div>`;
+        return;
+    }
+    list.innerHTML = [...bookings].sort((a,b) => a.startISO.localeCompare(b.startISO)).map((b, i) => {
+        const n = Math.round((new Date(b.endISO)-new Date(b.startISO))/86_400_000);
+        const isMine = b.bookedBy === currentUser.name || currentUser.isAdmin;
+        return `
+        <div class="queue-item ${isMine?'my-booking':''}">
+            <div class="queue-header">
+                <div class="queue-info">
+                    <strong>#${i+1} ${HOTEL_ICONS[b.hotel]||'🏨'} ${b.hotel}</strong><br>
+                    📅 ${b.startISO}${b.endISO!==b.startISO?' → '+b.endISO+(n>0?` <small style="color:#888">(${n} คืน)</small>`:''):''}<br>
+                    🙋 จองโดย: <strong>${b.bookedBy}</strong>
+                </div>
+                ${isMine ? `<button class="delete-btn" onclick="deleteBooking(${b.id})">✕ ยกเลิก</button>` : ''}
+            </div>
+            <div class="queue-people">
+                ${b.people.map(p => {
+                    const isMe = NAMES[p-1] === currentUser.name;
+                    return `<span class="person-tag ${isMe?'me':''}">${NAMES[p-1]}${isMe?' (คุณ)':''}</span>`;
+                }).join('')}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function resetForm() {
+    document.querySelectorAll('.person-item.selected').forEach(el => {
+        el.classList.remove('selected');
+        if (!bookedPeople.has(el.dataset.person) && !el.classList.contains('locked'))
+            el.querySelector('.person-status').textContent = 'ว่าง';
+    });
+    document.querySelectorAll('.hotel-option').forEach(h => h.classList.remove('selected'));
+    selectedHotel = ''; startD = endD = hoverD = null;
+    updateRangeText(); paintCells(); refreshBookBtn();
+}
+
+function updateAvailable() {
+    document.getElementById('availableCount').textContent = TOTAL - bookedPeople.size;
+}
+
+function switchTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-'+tab).classList.add('active');
+    document.querySelectorAll('.tab-btn')[tab==='booking'?0:1].classList.add('active');
+    if (tab==='log') renderLog();
+}
+
+// ── Helpers ──────────────────────────────────────
+function sameD(y,m,d,o) { return o&&o.y===y&&o.m===m&&o.d===d; }
+function cmpDate(a,b) { if(!a||!b)return 0; if(a.y!==b.y)return a.y-b.y; if(a.m!==b.m)return a.m-b.m; return a.d-b.d; }
+function fmtISO(o) { return `${o.y}-${String(o.m+1).padStart(2,'0')}-${String(o.d).padStart(2,'0')}`; }
+function isoToObj(s) { const[y,m,d]=s.split('-').map(Number); return{y,m:m-1,d}; }
+function fmtTH(o) { return new Date(o.y,o.m,o.d).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}); }
+function nightsBetween(a,b) { if(!a||!b)return 0; return Math.max(0,Math.round((new Date(b.y,b.m,b.d)-new Date(a.y,a.m,a.d))/86_400_000)); }
+function fmtTimestamp(iso) { return new Date(iso).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'medium'}); }
+function todayStr() { return new Date().toISOString().slice(0,10); }
+
+function exportCSV() {
+    const rows = logs.map((l,i) => [i+1,l.timestamp,l.action,l.bookedBy,l.people.join(';'),l.hotel,l.startISO,l.endISO,l.nights]);
+    const csv  = [['#','Timestamp','Action','BookedBy','People','Hotel','StartDate','EndDate','Nights'],...rows]
+                    .map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+    downloadFile('travel_log_'+todayStr()+'.csv', csv, 'text/csv');
+}
+function exportJSON() { downloadFile('travel_log_'+todayStr()+'.json', JSON.stringify(logs,null,2), 'application/json'); }
+function downloadFile(name,content,mime) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['\uFEFF'+content],{type:mime}));
+    a.download = name; a.click();
+}
+function clearLog() {
+    if (!confirm(`ล้าง Log ทั้งหมด ${logs.length} รายการ?`)) return;
+    logs = []; saveStorage(); renderLog();
+}
+
+// ── Storage ──────────────────────────────────────
+function saveStorage() {
+    localStorage.setItem('travelQ5_bookings', JSON.stringify(bookings));
+    localStorage.setItem('travelQ5_people',   JSON.stringify([...bookedPeople]));
+    localStorage.setItem('travelQ5_logs',     JSON.stringify(logs));
+}
+function loadStorage() {
+    const b=localStorage.getItem('travelQ5_bookings');
+    const p=localStorage.getItem('travelQ5_people');
+    const l=localStorage.getItem('travelQ5_logs');
+    if(b) bookings=JSON.parse(b);
+    if(p) bookedPeople=new Set(JSON.parse(p));
+    if(l) logs=JSON.parse(l);
+    renderQueue(); updateAvailable();
+}
+</script>
+</body>
+</html>
