@@ -11,11 +11,8 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh; padding: 20px;
         }
-
-        /* ── Access Denied Screen ── */
         .access-denied {
-            display: flex; align-items: center; justify-content: center;
-            min-height: 80vh;
+            display: flex; align-items: center; justify-content: center; min-height: 80vh;
         }
         .denied-card {
             background: white; border-radius: 16px; padding: 50px 40px;
@@ -24,15 +21,26 @@
         .denied-icon { font-size: 64px; margin-bottom: 20px; }
         .denied-title { font-size: 22px; font-weight: 800; color: #dc2626; margin-bottom: 10px; }
         .denied-msg { color: #666; font-size: 14px; line-height: 1.7; }
-
-        /* ── Admin Panel ── */
+        .loading-screen {
+            display: flex; align-items: center; justify-content: center; min-height: 80vh;
+        }
+        .loading-card {
+            background: white; border-radius: 16px; padding: 40px;
+            text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .spinner {
+            width: 48px; height: 48px; border: 5px solid #e0e0e0;
+            border-top-color: #667eea; border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .admin-panel {
             background: white; border-radius: 12px; padding: 20px 25px;
             margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             border-left: 5px solid #f59e0b;
         }
         .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-        .admin-title { font-weight: 800; color: #92400e; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        .admin-title { font-weight: 800; color: #92400e; font-size: 15px; }
         .admin-toggle {
             background: #fef3c7; border: 2px solid #f59e0b; color: #92400e;
             padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700;
@@ -40,7 +48,6 @@
         .admin-toggle:hover { background: #f59e0b; color: white; }
         .admin-body { display: none; }
         .admin-body.open { display: block; }
-
         .link-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
         .link-row {
             display: flex; align-items: center; gap: 10px; padding: 10px 12px;
@@ -58,8 +65,6 @@
         }
         .copy-btn:hover { background: #5568d3; }
         .copy-btn.copied { background: #22c55e; }
-
-        /* ── Main App ── */
         .container { max-width: 1400px; margin: 0 auto; }
         .header {
             background: white; padding: 20px 25px; border-radius: 12px;
@@ -73,11 +78,14 @@
         .user-badge {
             background: #667eea; color: white; padding: 8px 16px;
             border-radius: 20px; font-size: 13px; font-weight: 700;
-            display: flex; align-items: center; gap: 6px;
         }
         .admin-badge { background: #f59e0b; }
-
-        /* Tab */
+        .sync-btn {
+            background: #e0f2fe; border: 2px solid #0284c7; color: #0284c7;
+            padding: 8px 14px; border-radius: 8px; cursor: pointer;
+            font-size: 12px; font-weight: 700; margin-left: 10px;
+        }
+        .sync-btn:hover { background: #0284c7; color: white; }
         .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; }
         .tab-btn {
             padding: 10px 24px; border: none; border-radius: 8px; font-size: 14px;
@@ -88,13 +96,9 @@
         .tab-btn:hover:not(.active) { background: rgba(255,255,255,0.45); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
-        /* Main Grid */
         .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         h2 { color: #667eea; margin-bottom: 20px; font-size: 18px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
-
-        /* Person Grid */
         .person-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 20px; }
         .person-item {
             display: flex; flex-direction: column; align-items: center;
@@ -111,11 +115,8 @@
         .person-item.selected .person-status { color: rgba(255,255,255,0.85); }
         .person-item.booked .person-status { color: #e74c3c; }
         .person-item.locked .person-status { color: #d97706; }
-
         .form-group { margin-bottom: 16px; }
         label { display: block; margin-bottom: 6px; color: #444; font-weight: 600; font-size: 14px; }
-
-        /* Calendar */
         .date-range-container { border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; }
         .date-range-header {
             display: flex; align-items: center; justify-content: space-between;
@@ -156,8 +157,6 @@
         .range-text { font-weight: 600; color: #667eea; }
         .clear-btn { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 12px; padding: 3px 8px; border-radius: 4px; }
         .clear-btn:hover { background: #ffe8e8; }
-
-        /* Hotel */
         .hotel-options { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
         .hotel-option {
             border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px 8px;
@@ -167,15 +166,13 @@
         .hotel-option.selected { border-color: #667eea; background: #667eea; color: white; }
         .hotel-icon { font-size: 24px; margin-bottom: 5px; }
         .hotel-name { font-size: 11px; font-weight: 700; }
-
         .btn {
             width: 100%; padding: 13px; background: #667eea; color: white;
             border: none; border-radius: 8px; font-size: 15px; font-weight: 700;
             cursor: pointer; transition: all 0.3s; margin-top: 5px;
         }
-        .btn:hover:not(:disabled) { background: #5568d3; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102,126,234,0.4); }
+        .btn:hover:not(:disabled) { background: #5568d3; transform: translateY(-1px); }
         .btn:disabled { background: #ccc; cursor: not-allowed; }
-
         .status-bar {
             background: #e8f5e9; border: 1px solid #81c784; padding: 10px 14px;
             border-radius: 8px; margin-bottom: 15px; color: #2e7d32; font-size: 13px; font-weight: 600;
@@ -188,8 +185,13 @@
             background: #eff6ff; border: 1px solid #93c5fd; padding: 10px 14px;
             border-radius: 8px; margin-bottom: 15px; color: #1e40af; font-size: 13px;
         }
-
-        /* Queue */
+        .sync-status {
+            background: #f0fdf4; border: 1px solid #86efac; padding: 8px 14px;
+            border-radius: 8px; margin-bottom: 15px; color: #166534; font-size: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .sync-status.syncing { background: #fefce8; border-color: #fde047; color: #854d0e; }
+        .sync-status.error   { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
         .queue-list { max-height: 580px; overflow-y: auto; }
         .queue-list::-webkit-scrollbar { width: 4px; }
         .queue-list::-webkit-scrollbar-thumb { background: #667eea; border-radius: 4px; }
@@ -211,8 +213,6 @@
         .delete-btn:hover { background: #dc2626; color: white; }
         .empty-state { text-align: center; color: #bbb; padding: 40px 20px; }
         .empty-icon { font-size: 48px; margin-bottom: 10px; }
-
-        /* Log */
         .log-page { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .log-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
         .log-toolbar input, .log-toolbar select {
@@ -222,12 +222,10 @@
         .log-toolbar input[type="text"] { flex: 1; min-width: 180px; }
         .export-btn {
             padding: 8px 16px; border: none; border-radius: 8px; font-size: 13px;
-            font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+            font-weight: 700; cursor: pointer; white-space: nowrap;
         }
         .export-csv  { background: #22c55e; color: white; }
-        .export-csv:hover { background: #16a34a; }
         .export-json { background: #3b82f6; color: white; }
-        .export-json:hover { background: #2563eb; }
         .clear-log-btn { background: #fee2e2; color: #dc2626; }
         .clear-log-btn:hover { background: #dc2626; color: white; }
         .log-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
@@ -241,22 +239,20 @@
         tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.15s; }
         tbody tr:hover { background: #f8f9ff; }
         tbody td { padding: 10px 14px; vertical-align: middle; }
-        tbody tr:last-child { border-bottom: none; }
-        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
         .badge-book   { background: #dcfce7; color: #166534; }
         .badge-cancel { background: #fee2e2; color: #991b1b; }
-        .log-empty { text-align: center; color: #bbb; padding: 40px; font-size: 15px; }
+        .log-empty { text-align: center; color: #bbb; padding: 40px; }
         .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 16px; }
         .page-btn {
             width: 32px; height: 32px; border: 2px solid #e0e0e0; border-radius: 6px;
             background: white; cursor: pointer; font-size: 13px; font-weight: 700;
-            display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
         }
         .page-btn:hover:not(.active):not(:disabled) { border-color: #667eea; color: #667eea; }
         .page-btn.active { background: #667eea; border-color: #667eea; color: white; }
         .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
         .page-info { font-size: 13px; color: #888; }
-
         @media (max-width: 768px) {
             .main-content { grid-template-columns: 1fr; }
             .log-stats { grid-template-columns: repeat(2,1fr); }
@@ -265,22 +261,23 @@
 </head>
 <body>
 
-<!-- ══ ACCESS DENIED (shown if no valid token) ══ -->
 <div class="access-denied" id="accessDenied" style="display:none;">
     <div class="denied-card">
         <div class="denied-icon">🔒</div>
         <div class="denied-title">ไม่มีสิทธิ์เข้าใช้งาน</div>
-        <div class="denied-msg">
-            กรุณาใช้ลิงก์ที่ได้รับจากผู้ดูแลระบบ<br>
-            หากไม่มีลิงก์ กรุณาติดต่อทีม WDC Travel
-        </div>
+        <div class="denied-msg">กรุณาใช้ลิงก์ที่ได้รับจากผู้ดูแลระบบ<br>หากไม่มีลิงก์ กรุณาติดต่อทีม WDC Travel</div>
     </div>
 </div>
 
-<!-- ══ MAIN APP (hidden until token validated) ══ -->
+<div class="loading-screen" id="loadingScreen">
+    <div class="loading-card">
+        <div class="spinner"></div>
+        <div style="color:#667eea;font-weight:700;">กำลังโหลดข้อมูล...</div>
+    </div>
+</div>
+
 <div class="container" id="mainApp" style="display:none;">
 
-    <!-- Admin Panel (only for admin token) -->
     <div class="admin-panel" id="adminPanel" style="display:none;">
         <div class="admin-header">
             <div class="admin-title">⚙️ Admin — จัดการลิงก์สำหรับแชร์</div>
@@ -299,27 +296,29 @@
                 <div class="subtitle">Western Digital — Employee Transportation Booking</div>
             </div>
         </div>
-        <div class="user-badge" id="userBadge">👤 —</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <button class="sync-btn" onclick="syncData()">🔄 Refresh</button>
+            <div class="user-badge" id="userBadge">👤 —</div>
+        </div>
     </div>
 
     <div class="tab-nav">
         <button class="tab-btn active" onclick="switchTab('booking')">📝 จองคิว</button>
-        <button class="tab-btn" onclick="switchTab('log')" id="logTabBtn">📋 Log ย้อนหลัง</button>
+        <button class="tab-btn" onclick="switchTab('log')">📋 Log ย้อนหลัง</button>
     </div>
 
-    <!-- BOOKING TAB -->
     <div class="tab-content active" id="tab-booking">
         <div class="main-content">
             <div class="card">
                 <h2>📝 จองคิวใหม่</h2>
                 <div class="status-bar">👥 ผู้เดินทางที่ยังว่าง: <span id="availableCount">6</span> / 6 คน</div>
+                <div class="sync-status" id="syncStatus">✅ ข้อมูล Sync กับ Google Sheets แล้ว</div>
                 <div class="info-box" id="userInfo"></div>
 
                 <div class="form-group">
                     <label>เลือกผู้เดินทาง (เลือกได้ 1–3 คน)</label>
                     <div class="person-grid" id="personGrid"></div>
                 </div>
-
                 <div id="warningMsg" class="warning" style="display:none;">⚠️ เลือกได้สูงสุด 3 คนต่อรอบ</div>
 
                 <div class="form-group">
@@ -352,7 +351,6 @@
                         <div class="hotel-option" data-hotel="The Garden"><div class="hotel-icon">🌿</div><div class="hotel-name">The Garden</div></div>
                     </div>
                 </div>
-
                 <button class="btn" id="bookBtn" disabled>จองคิว</button>
             </div>
 
@@ -365,7 +363,6 @@
         </div>
     </div>
 
-    <!-- LOG TAB -->
     <div class="tab-content" id="tab-log">
         <div class="log-page">
             <h2>📋 Log ประวัติการจอง / ยกเลิก</h2>
@@ -376,7 +373,7 @@
                 <div class="stat-card"><div class="stat-num" id="statPeople" style="color:#f59e0b">0</div><div class="stat-label">คนที่ผ่านการจอง</div></div>
             </div>
             <div class="log-toolbar">
-                <input type="text" id="logSearch" placeholder="🔍 ค้นหา ชื่อ / โรงแรม / วันที่...">
+                <input type="text" id="logSearch" placeholder="🔍 ค้นหา...">
                 <select id="logFilterAction">
                     <option value="">ทุก Action</option>
                     <option value="BOOK">จองคิว</option>
@@ -413,11 +410,12 @@
 </div>
 
 <script>
-// ══════════════════════════════════════════════════
-//  TOKEN CONFIG — แก้ไข token และชื่อได้ที่นี่
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════
+const API_URL = 'https://script.google.com/macros/s/AKfycbxgTsmYMOIAm2WLwp9vaTc0UzjAvmdZ1NCYAr5XDdr6j3hoQZHR9Bc4vr-isGbQp5al/exec';
+
 const USERS = {
-    // token : { name, isAdmin }
     'token-admin-wdc2025'  : { name: 'Admin',      isAdmin: true  },
     'token-surakit-k001'   : { name: 'Surakit_K',  isAdmin: false },
     'token-rossukon-s002'  : { name: 'Rossukon_S', isAdmin: false },
@@ -427,9 +425,6 @@ const USERS = {
     'token-sayan-n006'     : { name: 'Sayan_N',    isAdmin: false },
 };
 
-// ══════════════════════════════════════════════════
-//  APP CONFIG
-// ══════════════════════════════════════════════════
 const TOTAL   = 6;
 const MAX_PER = 3;
 const NAMES   = ['Surakit_K','Rossukon_S','Khwanpho_C','Anan_W','Watthana_S','Sayan_N'];
@@ -438,24 +433,57 @@ const TH_MONTHS = ['มกราคม','กุมภาพันธ์','มี
 const HOTEL_ICONS = { 'Kantary':'🏰', 'Burgundy':'🍷', 'The Garden':'🌿' };
 const PAGE_SIZE = 15;
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  STATE
-// ══════════════════════════════════════════════════
-let currentUser  = null;   // { name, isAdmin, token }
-let bookings     = [];
-let bookedPeople = new Set();
-let logs         = [];
+// ══════════════════════════════════════════
+let currentUser   = null;
+let bookings      = [];
+let bookedPeople  = new Set();
+let logs          = [];
 let selectedHotel = '';
 let startD = null, endD = null, hoverD = null;
 let calY, calM, currentPage = 1;
 
-// ══════════════════════════════════════════════════
-//  BOOT — check token from URL
-// ══════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
+// ══════════════════════════════════════════
+//  API
+// ══════════════════════════════════════════
+async function apiCall(params) {
+    const url = API_URL + '?' + new URLSearchParams(params);
+    const res = await fetch(url);
+    return await res.json();
+}
+
+async function syncData() {
+    setSyncStatus('syncing', '🔄 กำลัง Sync...');
+    try {
+        const data = await apiCall({ action: 'getAll' });
+        bookings = data.bookings || [];
+        logs     = data.logs     || [];
+        bookedPeople = new Set(bookings.flatMap(b => b.people.map(String)));
+        buildPersonGrid();
+        renderQueue();
+        updateAvailable();
+        setSyncStatus('ok', '✅ Sync เสร็จแล้ว — ' + new Date().toLocaleTimeString('th-TH'));
+    } catch(e) {
+        setSyncStatus('error', '❌ Sync ไม่สำเร็จ — ' + e.message);
+    }
+}
+
+function setSyncStatus(type, msg) {
+    const el = document.getElementById('syncStatus');
+    el.className = 'sync-status' + (type === 'ok' ? '' : type === 'syncing' ? ' syncing' : ' error');
+    el.textContent = msg;
+}
+
+// ══════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', async () => {
     const params = new URLSearchParams(window.location.search);
     const token  = params.get('token');
     const user   = token ? USERS[token] : null;
+
+    document.getElementById('loadingScreen').style.display = 'none';
 
     if (!user) {
         document.getElementById('accessDenied').style.display = 'flex';
@@ -465,29 +493,27 @@ document.addEventListener('DOMContentLoaded', () => {
     currentUser = { ...user, token };
     document.getElementById('mainApp').style.display = 'block';
 
-    // Badge
     const badge = document.getElementById('userBadge');
     badge.textContent = (user.isAdmin ? '⚙️ ' : '👤 ') + user.name;
-    if (user.isAdmin) badge.classList.add('admin-badge');
-
-    // Admin extras
     if (user.isAdmin) {
+        badge.classList.add('admin-badge');
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('clearLogBtn').style.display = 'inline-block';
         buildLinkGrid();
     }
 
-    // User info box
     document.getElementById('userInfo').innerHTML =
-        `🔑 เข้าสู่ระบบในฐานะ <strong>${user.name}</strong> — ${user.isAdmin ? 'สามารถจองและจัดการได้ทั้งหมด' : 'สามารถจองในชื่อตัวเองและเลือกเพื่อนร่วมเดินทางได้'}`;
+        `🔑 เข้าสู่ระบบในฐานะ <strong>${user.name}</strong>`;
 
-    // Init calendar
     const now = new Date();
     calY = now.getFullYear(); calM = now.getMonth();
-
-    loadStorage();
-    buildPersonGrid();
     renderCalendar();
+
+    // Load data from Google Sheets
+    await syncData();
+
+    // Auto refresh ทุก 30 วินาที
+    setInterval(syncData, 30000);
 
     document.getElementById('prevBtn').addEventListener('click', () => shiftMonth(-1));
     document.getElementById('nextBtn').addEventListener('click', () => shiftMonth(1));
@@ -508,20 +534,16 @@ document.addEventListener('DOMContentLoaded', () => {
         .forEach(id => document.getElementById(id).addEventListener('input', () => { currentPage = 1; renderLog(); }));
 });
 
-// ══════════════════════════════════════════════════
-//  ADMIN — build share link grid
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════
+//  ADMIN LINKS
+// ══════════════════════════════════════════
 function buildLinkGrid() {
     const base = window.location.href.split('?')[0];
-    const grid = document.getElementById('linkGrid');
-    grid.innerHTML = Object.entries(USERS).map(([token, u]) => `
+    document.getElementById('linkGrid').innerHTML = Object.entries(USERS).map(([token, u]) => `
         <div class="link-row">
             <div class="link-name">${u.isAdmin ? '⚙️' : '👤'} ${u.name}</div>
-            <input class="link-url" id="link_${token}" readonly
-                value="${base}?token=${token}"
-                onclick="this.select()">
-            <button class="copy-btn" id="copybtn_${token}"
-                onclick="copyLink('${token}')">📋 คัดลอก</button>
+            <input class="link-url" id="link_${token}" readonly value="${base}?token=${token}" onclick="this.select()">
+            <button class="copy-btn" id="copybtn_${token}" onclick="copyLink('${token}')">📋 คัดลอก</button>
         </div>`).join('');
 }
 
@@ -537,28 +559,24 @@ function toggleAdminBody() {
     document.getElementById('adminBody').classList.toggle('open');
 }
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  PERSON GRID
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function buildPersonGrid() {
     const grid = document.getElementById('personGrid');
     grid.innerHTML = '';
-    const myName = currentUser.name;
-
     for (let i = 1; i <= TOTAL; i++) {
         const id = String(i);
         const isBooked = bookedPeople.has(id);
-        // Non-admin: can only select themselves (index matches name)
-        const isMe = NAMES[i-1] === myName;
+        const isMe     = NAMES[i-1] === currentUser.name;
         const isLocked = !currentUser.isAdmin && !isMe;
-
         const el = document.createElement('div');
         el.className = 'person-item' + (isBooked ? ' booked' : isLocked ? ' locked' : '');
         el.dataset.person = id;
         el.innerHTML = `
             <div class="person-avatar">${isMe ? '🙋' : '👤'}</div>
             <div class="person-name">${NAMES[i-1]}${isMe ? ' (คุณ)' : ''}</div>
-            <div class="person-status">${isBooked ? '✖ จองแล้ว' : isLocked ? '🔒 ไม่ใช่คุณ' : 'ว่าง'}</div>`;
+            <div class="person-status">${isBooked ? '✖ จองแล้ว' : isLocked ? '🔒 ล็อก' : 'ว่าง'}</div>`;
         grid.appendChild(el);
     }
     grid.addEventListener('click', onPersonClick);
@@ -567,9 +585,8 @@ function buildPersonGrid() {
 function onPersonClick(e) {
     const item = e.target.closest('.person-item:not(.booked):not(.locked)');
     if (!item) return;
-    const isSelected = item.classList.contains('selected');
     const count = document.querySelectorAll('.person-item.selected').length;
-    if (!isSelected && count >= MAX_PER) {
+    if (!item.classList.contains('selected') && count >= MAX_PER) {
         const w = document.getElementById('warningMsg');
         w.style.display = 'block'; clearTimeout(w._t);
         w._t = setTimeout(() => { w.style.display = 'none'; }, 2500);
@@ -581,9 +598,9 @@ function onPersonClick(e) {
     refreshBookBtn();
 }
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  CALENDAR
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function shiftMonth(d) {
     calM += d;
     if (calM > 11) { calM = 0; calY++; }
@@ -598,7 +615,6 @@ function renderCalendar() {
     const todayY = new Date().getFullYear(), todayM = new Date().getMonth(), todayD = new Date().getDate();
     const firstWeekday = new Date(calY, calM, 1).getDay();
     const totalDays    = new Date(calY, calM + 1, 0).getDate();
-
     for (let i = 0; i < firstWeekday; i++) {
         const el = document.createElement('div'); el.className = 'day-cell empty'; grid.appendChild(el);
     }
@@ -606,10 +622,9 @@ function renderCalendar() {
         const el = document.createElement('div');
         el.className = 'day-cell'; el.textContent = d;
         el.dataset.y = calY; el.dataset.m = calM; el.dataset.d = d;
-        const isPast = (calY < todayY) || (calY === todayY && calM < todayM) ||
-                       (calY === todayY && calM === todayM && d < todayD);
+        const isPast = (calY < todayY)||(calY===todayY&&calM<todayM)||(calY===todayY&&calM===todayM&&d<todayD);
         if (isPast) el.classList.add('disabled');
-        else { el.classList.add('available'); if (calY === todayY && calM === todayM && d === todayD) el.classList.add('today'); }
+        else { el.classList.add('available'); if (calY===todayY&&calM===todayM&&d===todayD) el.classList.add('today'); }
         grid.appendChild(el);
     }
     paintCells();
@@ -619,149 +634,189 @@ function paintCells() {
     document.querySelectorAll('#daysGrid .day-cell.available').forEach(el => {
         el.classList.remove('start-date','end-date','in-range','hover-range');
         if (!startD) return;
-        const cy = +el.dataset.y, cm = +el.dataset.m, cd = +el.dataset.d;
-        const rawEnd = endD || hoverD;
-        let from = startD, to = rawEnd;
-        if (to && cmpDate(to, from) < 0) { from = rawEnd; to = startD; }
-        const isFrom  = sameD(cy,cm,cd,from);
-        const isTo    = to && sameD(cy,cm,cd,to);
-        const between = to && cmpDate({y:cy,m:cm,d:cd},from) > 0 && cmpDate({y:cy,m:cm,d:cd},to) < 0;
-        if (isFrom && isTo) el.classList.add('start-date','end-date');
-        else if (isFrom)    el.classList.add('start-date');
-        else if (isTo)      el.classList.add('end-date');
-        else if (between)   el.classList.add(endD ? 'in-range' : 'hover-range');
+        const cy=+el.dataset.y, cm=+el.dataset.m, cd=+el.dataset.d;
+        const rawEnd = endD||hoverD;
+        let from=startD, to=rawEnd;
+        if (to&&cmpDate(to,from)<0){from=rawEnd;to=startD;}
+        const isFrom=sameD(cy,cm,cd,from), isTo=to&&sameD(cy,cm,cd,to);
+        const between=to&&cmpDate({y:cy,m:cm,d:cd},from)>0&&cmpDate({y:cy,m:cm,d:cd},to)<0;
+        if (isFrom&&isTo) el.classList.add('start-date','end-date');
+        else if (isFrom)  el.classList.add('start-date');
+        else if (isTo)    el.classList.add('end-date');
+        else if (between) el.classList.add(endD?'in-range':'hover-range');
     });
 }
 
 function onCalendarClick(e) {
     const cell = e.target.closest('.day-cell.available');
     if (!cell) return;
-    const clicked = { y:+cell.dataset.y, m:+cell.dataset.m, d:+cell.dataset.d };
-    if (!startD || (startD && endD)) { startD = clicked; endD = null; }
+    const clicked = {y:+cell.dataset.y,m:+cell.dataset.m,d:+cell.dataset.d};
+    if (!startD||(startD&&endD)){startD=clicked;endD=null;}
     else {
-        const cmp = cmpDate(clicked, startD);
-        if (cmp === 0) endD = clicked;
-        else if (cmp < 0) { endD = startD; startD = clicked; }
-        else endD = clicked;
+        const cmp=cmpDate(clicked,startD);
+        if(cmp===0) endD=clicked;
+        else if(cmp<0){endD=startD;startD=clicked;}
+        else endD=clicked;
     }
     updateRangeText(); paintCells(); refreshBookBtn();
 }
 
 function onCalendarHover(e) {
     const cell = e.target.closest('.day-cell.available');
-    if (!cell || !startD || endD) { hoverD = null; return; }
-    hoverD = { y:+cell.dataset.y, m:+cell.dataset.m, d:+cell.dataset.d };
+    if (!cell||!startD||endD){hoverD=null;return;}
+    hoverD={y:+cell.dataset.y,m:+cell.dataset.m,d:+cell.dataset.d};
     paintCells();
 }
 
-function clearDates() { startD = endD = hoverD = null; updateRangeText(); paintCells(); refreshBookBtn(); }
+function clearDates(){startD=endD=hoverD=null;updateRangeText();paintCells();refreshBookBtn();}
 
-function updateRangeText() {
-    const el = document.getElementById('rangeText');
-    if (!startD) el.textContent = '— เลือกวันเริ่มต้น —';
-    else if (!endD) el.textContent = `เริ่ม: ${fmtTH(startD)}  →  เลือกวันสิ้นสุด`;
+function updateRangeText(){
+    const el=document.getElementById('rangeText');
+    if(!startD) el.textContent='— เลือกวันเริ่มต้น —';
+    else if(!endD) el.textContent=`เริ่ม: ${fmtTH(startD)}  →  เลือกวันสิ้นสุด`;
     else {
-        const n = nightsBetween(startD, endD);
-        el.textContent = `${fmtTH(startD)}  →  ${fmtTH(endD)}` + (n > 0 ? `  (${n} คืน)` : '  (วันเดียว)');
+        const n=nightsBetween(startD,endD);
+        el.textContent=`${fmtTH(startD)}  →  ${fmtTH(endD)}`+(n>0?`  (${n} คืน)`:'  (วันเดียว)');
     }
 }
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  BOOK
-// ══════════════════════════════════════════════════
-function refreshBookBtn() {
-    const n = document.querySelectorAll('.person-item.selected').length;
-    document.getElementById('bookBtn').disabled = !(n > 0 && startD && selectedHotel);
+// ══════════════════════════════════════════
+function refreshBookBtn(){
+    const n=document.querySelectorAll('.person-item.selected').length;
+    document.getElementById('bookBtn').disabled=!(n>0&&startD&&selectedHotel);
 }
 
-function doBook() {
-    const people = Array.from(document.querySelectorAll('.person-item.selected')).map(el => el.dataset.person);
-    if (!people.length || !startD || !selectedHotel) return;
+async function doBook(){
+    const people=Array.from(document.querySelectorAll('.person-item.selected')).map(el=>el.dataset.person);
+    if(!people.length||!startD||!selectedHotel) return;
 
-    const b = {
+    document.getElementById('bookBtn').disabled=true;
+    document.getElementById('bookBtn').textContent='⏳ กำลังบันทึก...';
+
+    const b={
         id: Date.now(), people,
-        startISO: fmtISO(startD), endISO: endD ? fmtISO(endD) : fmtISO(startD),
+        startISO: fmtISO(startD), endISO: endD?fmtISO(endD):fmtISO(startD),
         hotel: selectedHotel, createdAt: new Date().toISOString(),
         bookedBy: currentUser.name
     };
-    bookings.push(b);
-    people.forEach(p => bookedPeople.add(p));
-    addLog('BOOK', b);
-    saveStorage(); buildPersonGrid(); renderQueue(); resetForm(); updateAvailable();
 
-    const n = endD ? nightsBetween(startD, endD) : 0;
-    alert(`✅ จองสำเร็จ!\n🏨 ${b.hotel}\n📅 ${b.startISO}${b.endISO !== b.startISO ? ' → '+b.endISO+(n>0?` (${n} คืน)`:'') : ''}\n👥 ${people.map(p=>NAMES[p-1]).join(', ')}`);
-}
-
-function deleteBooking(id) {
-    const b = bookings.find(x => x.id === id);
-    if (!b) return;
-    // Only admin or the person who booked can cancel
-    if (!currentUser.isAdmin && b.bookedBy !== currentUser.name) {
-        alert('❌ คุณไม่มีสิทธิ์ยกเลิกการจองของคนอื่น'); return;
+    try {
+        await apiCall({ action:'addBooking', data: JSON.stringify(b) });
+        const logEntry = {
+            logId: Date.now()+Math.random(), timestamp: new Date().toISOString(),
+            action:'BOOK', bookedBy: currentUser.name,
+            people: b.people.map(p=>NAMES[p-1]), hotel: b.hotel,
+            startISO: b.startISO, endISO: b.endISO,
+            nights: nightsBetween(isoToObj(b.startISO), isoToObj(b.endISO))
+        };
+        await apiCall({ action:'addLog', data: JSON.stringify(logEntry) });
+        await syncData();
+        resetForm();
+        const n=endD?nightsBetween(startD,endD):0;
+        alert(`✅ จองสำเร็จ!\n🏨 ${b.hotel}\n📅 ${b.startISO}${b.endISO!==b.startISO?' → '+b.endISO+(n>0?` (${n} คืน)`:''): ''}\n👥 ${people.map(p=>NAMES[p-1]).join(', ')}`);
+    } catch(e) {
+        alert('❌ เกิดข้อผิดพลาด: ' + e.message);
     }
-    if (!confirm('ยืนยันยกเลิกการจองนี้?')) return;
-    b.people.forEach(p => bookedPeople.delete(String(p)));
-    addLog('CANCEL', b);
-    bookings = bookings.filter(x => x.id !== id);
-    saveStorage(); buildPersonGrid(); renderQueue(); updateAvailable(); refreshBookBtn();
+
+    document.getElementById('bookBtn').textContent='จองคิว';
 }
 
-// ══════════════════════════════════════════════════
+async function deleteBooking(id){
+    const b=bookings.find(x=>x.id==id);
+    if(!b) return;
+    if(!currentUser.isAdmin&&b.bookedBy!==currentUser.name){
+        alert('❌ ไม่มีสิทธิ์ยกเลิกการจองของคนอื่น'); return;
+    }
+    if(!confirm('ยืนยันยกเลิกการจองนี้?')) return;
+    try {
+        await apiCall({ action:'deleteBooking', id: String(id) });
+        const logEntry={
+            logId: Date.now()+Math.random(), timestamp: new Date().toISOString(),
+            action:'CANCEL', bookedBy: currentUser.name,
+            people: b.people.map(p=>NAMES[p-1]), hotel: b.hotel,
+            startISO: b.startISO, endISO: b.endISO,
+            nights: nightsBetween(isoToObj(b.startISO), isoToObj(b.endISO))
+        };
+        await apiCall({ action:'addLog', data: JSON.stringify(logEntry) });
+        await syncData();
+    } catch(e) {
+        alert('❌ เกิดข้อผิดพลาด: ' + e.message);
+    }
+}
+
+// ══════════════════════════════════════════
+//  RENDER QUEUE
+// ══════════════════════════════════════════
+function renderQueue(){
+    const list=document.getElementById('queueList');
+    if(!bookings.length){
+        list.innerHTML=`<div class="empty-state"><div class="empty-icon">🗂️</div><div>ยังไม่มีการจองคิว</div></div>`;
+        return;
+    }
+    list.innerHTML=[...bookings].sort((a,b)=>a.startISO.localeCompare(b.startISO)).map((b,i)=>{
+        const n=Math.round((new Date(b.endISO)-new Date(b.startISO))/86_400_000);
+        const isMine=b.bookedBy===currentUser.name||currentUser.isAdmin;
+        return `
+        <div class="queue-item ${isMine?'my-booking':''}">
+            <div class="queue-header">
+                <div class="queue-info">
+                    <strong>#${i+1} ${HOTEL_ICONS[b.hotel]||'🏨'} ${b.hotel}</strong><br>
+                    📅 ${b.startISO}${b.endISO!==b.startISO?' → '+b.endISO+(n>0?` <small style="color:#888">(${n} คืน)</small>`:''): ''}<br>
+                    🙋 จองโดย: <strong>${b.bookedBy}</strong>
+                </div>
+                ${isMine?`<button class="delete-btn" onclick="deleteBooking(${b.id})">✕ ยกเลิก</button>`:''}
+            </div>
+            <div class="queue-people">
+                ${b.people.map(p=>{
+                    const isMe=NAMES[p-1]===currentUser.name;
+                    return `<span class="person-tag ${isMe?'me':''}">${NAMES[p-1]}${isMe?' (คุณ)':''}</span>`;
+                }).join('')}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ══════════════════════════════════════════
 //  LOG
-// ══════════════════════════════════════════════════
-function addLog(action, booking) {
-    logs.unshift({
-        logId: Date.now() + Math.random(),
-        timestamp: new Date().toISOString(),
-        action, bookedBy: booking.bookedBy || currentUser.name,
-        bookingId: booking.id,
-        people: booking.people.map(p => NAMES[p-1]),
-        hotel: booking.hotel,
-        startISO: booking.startISO, endISO: booking.endISO,
-        nights: nightsBetween(isoToObj(booking.startISO), isoToObj(booking.endISO))
-    });
-    saveStorage();
-}
+// ══════════════════════════════════════════
+function renderLog(){
+    const search=document.getElementById('logSearch').value.toLowerCase();
+    const actF=document.getElementById('logFilterAction').value;
+    const hotelF=document.getElementById('logFilterHotel').value;
+    const dateFrom=document.getElementById('logFilterDateFrom').value;
+    const dateTo=document.getElementById('logFilterDateTo').value;
 
-function renderLog() {
-    const search   = document.getElementById('logSearch').value.toLowerCase();
-    const actF     = document.getElementById('logFilterAction').value;
-    const hotelF   = document.getElementById('logFilterHotel').value;
-    const dateFrom = document.getElementById('logFilterDateFrom').value;
-    const dateTo   = document.getElementById('logFilterDateTo').value;
-
-    let filtered = logs.filter(l => {
-        if (actF    && l.action !== actF)   return false;
-        if (hotelF  && l.hotel  !== hotelF) return false;
-        if (dateFrom && l.startISO < dateFrom) return false;
-        if (dateTo   && l.startISO > dateTo)   return false;
-        if (search) {
-            const hay = [l.action, l.hotel, l.startISO, l.endISO, l.bookedBy, ...l.people].join(' ').toLowerCase();
-            if (!hay.includes(search)) return false;
+    let filtered=logs.filter(l=>{
+        if(actF&&l.action!==actF) return false;
+        if(hotelF&&l.hotel!==hotelF) return false;
+        if(dateFrom&&l.startISO<dateFrom) return false;
+        if(dateTo&&l.startISO>dateTo) return false;
+        if(search){
+            const hay=[l.action,l.hotel,l.startISO,l.endISO,l.bookedBy,...(l.people||[])].join(' ').toLowerCase();
+            if(!hay.includes(search)) return false;
         }
         return true;
     });
 
-    document.getElementById('statTotal').textContent  = logs.length;
-    document.getElementById('statBook').textContent   = logs.filter(l => l.action==='BOOK').length;
-    document.getElementById('statCancel').textContent = logs.filter(l => l.action==='CANCEL').length;
-    document.getElementById('statPeople').textContent = new Set(logs.flatMap(l => l.people)).size;
+    document.getElementById('statTotal').textContent=logs.length;
+    document.getElementById('statBook').textContent=logs.filter(l=>l.action==='BOOK').length;
+    document.getElementById('statCancel').textContent=logs.filter(l=>l.action==='CANCEL').length;
+    document.getElementById('statPeople').textContent=new Set(logs.flatMap(l=>l.people||[])).size;
 
-    const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-    if (currentPage > pages) currentPage = pages;
-    const slice = filtered.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
+    const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
+    if(currentPage>pages) currentPage=pages;
+    const slice=filtered.slice((currentPage-1)*PAGE_SIZE,currentPage*PAGE_SIZE);
 
-    const tbody = document.getElementById('logBody');
-    document.getElementById('logEmpty').style.display = slice.length ? 'none' : 'block';
-
-    tbody.innerHTML = slice.map((l, i) => `
+    document.getElementById('logEmpty').style.display=slice.length?'none':'block';
+    document.getElementById('logBody').innerHTML=slice.map((l,i)=>`
         <tr>
             <td style="color:#999;font-size:11px">${(currentPage-1)*PAGE_SIZE+i+1}</td>
-            <td style="white-space:nowrap">${fmtTimestamp(l.timestamp)}</td>
+            <td style="white-space:nowrap">${new Date(l.timestamp).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'medium'})}</td>
             <td><span class="badge ${l.action==='BOOK'?'badge-book':'badge-cancel'}">${l.action==='BOOK'?'✅ จอง':'❌ ยกเลิก'}</span></td>
             <td><strong>${l.bookedBy}</strong></td>
-            <td>${l.people.map(n=>`<span class="person-tag" style="font-size:11px">${n}</span>`).join(' ')}</td>
+            <td>${(l.people||[]).map(n=>`<span class="person-tag" style="font-size:11px">${n}</span>`).join(' ')}</td>
             <td>${HOTEL_ICONS[l.hotel]||'🏨'} ${l.hotel}</td>
             <td style="white-space:nowrap">${l.startISO}${l.endISO!==l.startISO?' → '+l.endISO:''}</td>
             <td style="text-align:center">${l.nights>0?l.nights+' คืน':'—'}</td>
@@ -770,114 +825,70 @@ function renderLog() {
     renderPagination(pages);
 }
 
-function renderPagination(pages) {
-    const c = document.getElementById('pagination');
-    if (pages <= 1) { c.innerHTML = ''; return; }
-    let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
-    for (let p = 1; p <= pages; p++) {
-        if (p===1||p===pages||Math.abs(p-currentPage)<=1)
-            html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
-        else if (Math.abs(p-currentPage)===2) html += `<span class="page-info">…</span>`;
+function renderPagination(pages){
+    const c=document.getElementById('pagination');
+    if(pages<=1){c.innerHTML='';return;}
+    let html=`<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+    for(let p=1;p<=pages;p++){
+        if(p===1||p===pages||Math.abs(p-currentPage)<=1)
+            html+=`<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+        else if(Math.abs(p-currentPage)===2) html+=`<span class="page-info">…</span>`;
     }
-    html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>›</button>
-             <span class="page-info">(${logs.length} รายการ)</span>`;
-    c.innerHTML = html;
+    html+=`<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>›</button>
+           <span class="page-info">(${logs.length} รายการ)</span>`;
+    c.innerHTML=html;
 }
-function goPage(p) { currentPage = p; renderLog(); }
+function goPage(p){currentPage=p;renderLog();}
 
-function renderQueue() {
-    const list = document.getElementById('queueList');
-    if (!bookings.length) {
-        list.innerHTML = `<div class="empty-state"><div class="empty-icon">🗂️</div><div>ยังไม่มีการจองคิว</div></div>`;
-        return;
-    }
-    list.innerHTML = [...bookings].sort((a,b) => a.startISO.localeCompare(b.startISO)).map((b, i) => {
-        const n = Math.round((new Date(b.endISO)-new Date(b.startISO))/86_400_000);
-        const isMine = b.bookedBy === currentUser.name || currentUser.isAdmin;
-        return `
-        <div class="queue-item ${isMine?'my-booking':''}">
-            <div class="queue-header">
-                <div class="queue-info">
-                    <strong>#${i+1} ${HOTEL_ICONS[b.hotel]||'🏨'} ${b.hotel}</strong><br>
-                    📅 ${b.startISO}${b.endISO!==b.startISO?' → '+b.endISO+(n>0?` <small style="color:#888">(${n} คืน)</small>`:''):''}<br>
-                    🙋 จองโดย: <strong>${b.bookedBy}</strong>
-                </div>
-                ${isMine ? `<button class="delete-btn" onclick="deleteBooking(${b.id})">✕ ยกเลิก</button>` : ''}
-            </div>
-            <div class="queue-people">
-                ${b.people.map(p => {
-                    const isMe = NAMES[p-1] === currentUser.name;
-                    return `<span class="person-tag ${isMe?'me':''}">${NAMES[p-1]}${isMe?' (คุณ)':''}</span>`;
-                }).join('')}
-            </div>
-        </div>`;
-    }).join('');
+async function clearLog(){
+    if(!confirm(`ล้าง Log ทั้งหมด ${logs.length} รายการ?`)) return;
+    await apiCall({action:'clearLogs'});
+    await syncData();
+    renderLog();
 }
 
-function resetForm() {
-    document.querySelectorAll('.person-item.selected').forEach(el => {
-        el.classList.remove('selected');
-        if (!bookedPeople.has(el.dataset.person) && !el.classList.contains('locked'))
-            el.querySelector('.person-status').textContent = 'ว่าง';
-    });
-    document.querySelectorAll('.hotel-option').forEach(h => h.classList.remove('selected'));
-    selectedHotel = ''; startD = endD = hoverD = null;
-    updateRangeText(); paintCells(); refreshBookBtn();
-}
-
-function updateAvailable() {
-    document.getElementById('availableCount').textContent = TOTAL - bookedPeople.size;
-}
-
-function switchTab(tab) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+function switchTab(tab){
+    document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
     document.getElementById('tab-'+tab).classList.add('active');
     document.querySelectorAll('.tab-btn')[tab==='booking'?0:1].classList.add('active');
-    if (tab==='log') renderLog();
+    if(tab==='log') renderLog();
 }
 
-// ── Helpers ──────────────────────────────────────
-function sameD(y,m,d,o) { return o&&o.y===y&&o.m===m&&o.d===d; }
-function cmpDate(a,b) { if(!a||!b)return 0; if(a.y!==b.y)return a.y-b.y; if(a.m!==b.m)return a.m-b.m; return a.d-b.d; }
-function fmtISO(o) { return `${o.y}-${String(o.m+1).padStart(2,'0')}-${String(o.d).padStart(2,'0')}`; }
-function isoToObj(s) { const[y,m,d]=s.split('-').map(Number); return{y,m:m-1,d}; }
-function fmtTH(o) { return new Date(o.y,o.m,o.d).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}); }
-function nightsBetween(a,b) { if(!a||!b)return 0; return Math.max(0,Math.round((new Date(b.y,b.m,b.d)-new Date(a.y,a.m,a.d))/86_400_000)); }
-function fmtTimestamp(iso) { return new Date(iso).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'medium'}); }
-function todayStr() { return new Date().toISOString().slice(0,10); }
-
-function exportCSV() {
-    const rows = logs.map((l,i) => [i+1,l.timestamp,l.action,l.bookedBy,l.people.join(';'),l.hotel,l.startISO,l.endISO,l.nights]);
-    const csv  = [['#','Timestamp','Action','BookedBy','People','Hotel','StartDate','EndDate','Nights'],...rows]
-                    .map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
-    downloadFile('travel_log_'+todayStr()+'.csv', csv, 'text/csv');
-}
-function exportJSON() { downloadFile('travel_log_'+todayStr()+'.json', JSON.stringify(logs,null,2), 'application/json'); }
-function downloadFile(name,content,mime) {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob(['\uFEFF'+content],{type:mime}));
-    a.download = name; a.click();
-}
-function clearLog() {
-    if (!confirm(`ล้าง Log ทั้งหมด ${logs.length} รายการ?`)) return;
-    logs = []; saveStorage(); renderLog();
+function resetForm(){
+    document.querySelectorAll('.person-item.selected').forEach(el=>{
+        el.classList.remove('selected');
+        if(!bookedPeople.has(el.dataset.person)&&!el.classList.contains('locked'))
+            el.querySelector('.person-status').textContent='ว่าง';
+    });
+    document.querySelectorAll('.hotel-option').forEach(h=>h.classList.remove('selected'));
+    selectedHotel='';startD=endD=hoverD=null;
+    updateRangeText();paintCells();refreshBookBtn();
 }
 
-// ── Storage ──────────────────────────────────────
-function saveStorage() {
-    localStorage.setItem('travelQ5_bookings', JSON.stringify(bookings));
-    localStorage.setItem('travelQ5_people',   JSON.stringify([...bookedPeople]));
-    localStorage.setItem('travelQ5_logs',     JSON.stringify(logs));
+function updateAvailable(){
+    document.getElementById('availableCount').textContent=TOTAL-bookedPeople.size;
 }
-function loadStorage() {
-    const b=localStorage.getItem('travelQ5_bookings');
-    const p=localStorage.getItem('travelQ5_people');
-    const l=localStorage.getItem('travelQ5_logs');
-    if(b) bookings=JSON.parse(b);
-    if(p) bookedPeople=new Set(JSON.parse(p));
-    if(l) logs=JSON.parse(l);
-    renderQueue(); updateAvailable();
+
+// ── Helpers ──────────────────────────────
+function sameD(y,m,d,o){return o&&o.y===y&&o.m===m&&o.d===d;}
+function cmpDate(a,b){if(!a||!b)return 0;if(a.y!==b.y)return a.y-b.y;if(a.m!==b.m)return a.m-b.m;return a.d-b.d;}
+function fmtISO(o){return `${o.y}-${String(o.m+1).padStart(2,'0')}-${String(o.d).padStart(2,'0')}`;}
+function isoToObj(s){const[y,m,d]=s.split('-').map(Number);return{y,m:m-1,d};}
+function fmtTH(o){return new Date(o.y,o.m,o.d).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});}
+function nightsBetween(a,b){if(!a||!b)return 0;return Math.max(0,Math.round((new Date(b.y,b.m,b.d)-new Date(a.y,a.m,a.d))/86_400_000));}
+
+function exportCSV(){
+    const rows=logs.map((l,i)=>[i+1,l.timestamp,l.action,l.bookedBy,(l.people||[]).join(';'),l.hotel,l.startISO,l.endISO,l.nights]);
+    const csv=[['#','Timestamp','Action','BookedBy','People','Hotel','StartDate','EndDate','Nights'],...rows]
+        .map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+    downloadFile('travel_log_'+new Date().toISOString().slice(0,10)+'.csv',csv,'text/csv');
+}
+function exportJSON(){downloadFile('travel_log_'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(logs,null,2),'application/json');}
+function downloadFile(name,content,mime){
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob(['\uFEFF'+content],{type:mime}));
+    a.download=name;a.click();
 }
 </script>
 </body>
